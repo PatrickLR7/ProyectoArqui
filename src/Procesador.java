@@ -10,14 +10,24 @@ public class Procesador {
 
 
 
-  //private int[][] contexto; //Estructura para manejar el contexto de los hilillos. Cada fila representa un hilillo. Dentro de la fila pos 0 es el PC y 1 a 32 son los registros.
+ 
   //private int[][] registros; //Estructura para manejar cada registro con su estado.
+
+  public int contexto[][]; //Estructura para manejar el contexto de los hilillos. Cada fila representa un hilillo. Dentro de la fila pos 0 es el PC y 1 a 32 son los registros.
+  //public CacheD[] cacheDatos = new CacheD[2];
+  //public CacheI[] cacheInstrucciones = new CacheI[2];
+
 
 
     public Procesador(){
 
 
-
+        contexto = new int[7][33];
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 33; j++) {
+                contexto[i][j] = 0;
+            }
+        }
 
 
     }
@@ -60,9 +70,20 @@ public class Procesador {
 
 
 
+     /**
+     * Metodo que llena el PC del hilillo en su contexto.
+     * @param fila Numero del hilillo.
+     * @param pc PC del hilillo.
+     */
+    public void llenarContextopc(int fila, int pc) {
+        contexto[fila][32] = pc;
+    }
+
 
   public static void main(String[] args) {
     
+    Procesador procesador = new Procesador();
+
     int pc;
 
     MemoriaPrincipal memoriaPrincipal = MemoriaPrincipal.getInstancia();
@@ -70,16 +91,24 @@ public class Procesador {
 
 
     for (int i = 0; i < 7; i++) {
+
         String rutaHilo = i + ".txt";
         String instruccionesLeidas = leerArchivo(rutaHilo);
         pc = memoriaPrincipal.agregarInst(instruccionesLeidas);
+        procesador.llenarContextopc(i, pc);
+
 
     }
 
+        //IMPRIMIR MEMORIA DATOS
+        System.out.println("MEMORIA DE DATOS");
+        memoriaPrincipal.imprimirMemoria();
+
+        //IMPRIMIR MEMORIA INSTRUCCIONES
+        System.out.println("MEMORIA DE INSTRUCCIONES");
+        memoriaPrincipal.imprimirMemoriaInst();
 
 
-    Procesador proce = new Procesador();
-      proce.prueba();
 
     /*
         Thread thread = new Thread();

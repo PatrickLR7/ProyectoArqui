@@ -82,5 +82,17 @@ public class MemoriaPrincipal{
         }
         System.out.println(md);
     }
+
+        /** Metodo que imprime los valores de la memoria de instrucciones. */
+        public void imprimirMemoriaInst() {
+            String md = "";
+            for (int i = 0; i < 40; i++) {
+                for(int j = 0; j < 16; j++) {
+                    md = md + memoria.memInstrucciones[i].palabra[j] + "   ";
+                }
+                md = md + "\n";
+            }
+            System.out.println(md);
+        }
     
 }
