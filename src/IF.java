@@ -14,7 +14,8 @@ public class IF extends Etapa implements Runnable{
 	}
 
 	@Override
-	public void ejecutarEtapa(){
+	public void ejecutarEtapa() throws InterruptedException{
 		//TODO hacer lo respectivo.
+		super.manejarBarrera();
 	}
 }

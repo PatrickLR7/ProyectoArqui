@@ -1,23 +1,27 @@
 public class Etapa{
-    Etapa siguientEtapa = null;
+    Etapa siguienteEtapa = null;
     AdminConcurrencia adminConcurrencia = null;
 
     public void ejecutarEtapa() throws InterruptedException {
         /*
-            if(ir != null){  Debemos averiguar de donde sacar el IR
+            Esto solo es la firma del método, cada clase especializada le hace Override.
+            Deben hacer algo así:
+
+            if(ir != null){  Debemos averiguar de donde sacar el IR en cada una de las etapas.
 
             }
-        */
 
-        manejarBarrera();
+            manejarBarrera();
+
+        */
     }
 
     public Etapa getSiguienteEtapa(){
-        return siguientEtapa;
+        return siguienteEtapa;
     }
 
     public void setSiguienteEtapa(Etapa siguienteEtapa){
-        this.siguientEtapa = siguienteEtapa;
+        this.siguienteEtapa = siguienteEtapa;
     }
 
     public void manejarBarrera() throws InterruptedException{
