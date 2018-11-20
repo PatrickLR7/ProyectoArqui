@@ -19,7 +19,11 @@ public class Procesador {
   public int contexto[][]; //Estructura para manejar el contexto de los hilillos. Cada fila representa un hilillo. Dentro de la fila pos 0 es el PC y 1 a 32 son los registros.
   //public CacheD[] cacheDatos = new CacheD[2];
   //public CacheI[] cacheInstrucciones = new CacheI[2];
-
+  public IF hiloIF;
+  public ID hiloID;
+  public EX hiloEX;
+  public Mem hiloMem;
+  public WB hiloWB;
 
 
     public Procesador(){
@@ -32,6 +36,12 @@ public class Procesador {
                 contexto[i][j] = 0;
             }
         }
+
+        hiloIF = null;
+        hiloID = null;
+        hiloEX = null;
+        hiloMem = null;
+        hiloWB = null;
 
 
     }
@@ -100,7 +110,7 @@ public class Procesador {
     
     Procesador procesador = new Procesador();
 
-     int pc;
+       int  pc=0;
 
     MemoriaPrincipal memoriaPrincipal = MemoriaPrincipal.getInstancia();
 
@@ -135,50 +145,13 @@ public class Procesador {
        
 
 
-        Thread thread = new Thread();
-
-        new Thread(new Runnable(pc) {
-
-        public void run() {
-            IF hiloIF = new IF(pc);
-
-            hiloIF.run();
-
-        }
-
-        }).start();
-
-
-
-
-
-
-
-    /*
-        Thread thread = new Thread();
-
+        procesador.hiloIF = new IF(pc);
         new Thread(new Runnable() {
 
         public void run() {
-            hiloBurbuja hiloB = new hiloBurbuja(inter);
-
-            hiloB.run();
-
+            procesador.hiloIF.run();
         }
-
         }).start();
-
-
-        new Thread(new Runnable() {
-
-                public void run() {
-                    hiloQuick hiloQ = new hiloQuick(inter);
-
-                    hiloQ.run();
-
-                }
-        }).start();
-    */
 
   }
 

@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-public class IF implements Runnable {
+public class IF extends Etapa implements Runnable{
 
   int pc;
   private ArrayList<ArrayList<Integer>> cacheInst;
@@ -10,11 +10,11 @@ public class IF implements Runnable {
 	}
 	
 	public void run() {
-
-
-
-
-
 		
+	}
+
+	@Override
+	public void ejecutarEtapa(){
+		//TODO hacer lo respectivo.
 	}
 }

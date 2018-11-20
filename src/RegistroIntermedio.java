@@ -67,7 +67,7 @@ public class RegistroIntermedio {
           public int getRegA(){
             return this.regA;
           }
-        
+         
           public void setRegA(int nRegA){
             this.regA = nRegA;
           }
