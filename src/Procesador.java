@@ -16,7 +16,7 @@ public class Procesador {
 
   //private int[][] registros; //Estructura para manejar cada registro con su estado.
 
-  public int contexto[][]; //Estructura para manejar el contexto de los hilillos. Cada fila representa un hilillo. Dentro de la fila pos 0 es el PC y 1 a 32 son los registros.
+  public int contexto[][]; //Estructura para manejar el contexto de los hilillos. Cada fila representa un hilillo. Dentro de la fila pos 32 es el PC y 0 a 31 son los registros.
   //public CacheD[] cacheDatos = new CacheD[2];
   //public CacheI[] cacheInstrucciones = new CacheI[2];
   public IF hiloIF;
@@ -127,8 +127,6 @@ public class Procesador {
     }
 
 
-        
-
 
 
         //IMPRIMIR MEMORIA DATOS
@@ -143,9 +141,14 @@ public class Procesador {
         System.out.println("CONTEXTO");
         procesador.imprimirContexto(); 
        
+        
+       
 
 
-        procesador.hiloIF = new IF(pc);
+        int idActual = colaIDs.poll();
+
+
+        procesador.hiloIF = new IF(idActual, procesador.contexto[idActual]);
         new Thread(new Runnable() {
 
         public void run() {

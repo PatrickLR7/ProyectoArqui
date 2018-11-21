@@ -7,13 +7,19 @@ public class RegistroIntermedio {
     * OuterClass.InnerClass innerObject = outerObject.new InnerClass();
     */
 
-    public class IF_ID { //Estructura para registro intermedio IF_ID
+
+
+
+    public static class IF_ID { //Estructura para registro intermedio IF_ID
         public int npc;
-        public ArrayList<Integer> ir;
+        public int[] ir;
+        public boolean libre;
+        private static IF_ID if_id;
 
         public IF_ID(){
             npc = 0;
-            ir = new ArrayList<Integer>(4);
+            ir = new int[4];
+            libre = true;
           }
         
           public int getNpc(){
@@ -24,28 +30,55 @@ public class RegistroIntermedio {
             this.npc = npcCopiado;
           }
         
-          public ArrayList getIr(){
+          public int[] getIr(){
             return this.ir;
           }
         
-          public void setIr(ArrayList irCopiado){
+          public void setIr(int[] irCopiado){
             this.ir = irCopiado;
           }
+
+
+          public boolean getlibre(){
+            return this.libre;
+          }
+        
+          public void setlibre(boolean libreCopiado){
+            this.libre = libreCopiado;
+          }
+
+          /**
+           * Metodo Singleton para controlar que solo se cree un objeto IF_ID.
+           * Controla que solo se maneje una instancia de memoria en el programa.
+           * @return Devuelve la memoria si esta ya existe.
+           */
+          public static IF_ID getInstancia() {
+            if (if_id == null) {
+                if_id = new IF_ID();
+            }
+              return if_id;
+            }
+
+
+          
     }
 
-    public class ID_EX { //Estructura para registros intermedios ID_EX
+    public static class ID_EX { //Estructura para registros intermedios ID_EX
         public int npc;
-        public ArrayList<Integer> ir;
+        public int[] ir;
         public int regA;
         public int regB;
         public int imm;
+        public boolean libre;  
+        private static ID_EX id_ex;      
 
         public ID_EX(){
             npc = 0;
-            ir = new ArrayList<Integer>(4);
+            ir = new int[4];
             regA = 0;
             regB = 0;
             imm = 0;
+            libre = true;                                  
           }
         
           public int getNpc(){
@@ -56,11 +89,11 @@ public class RegistroIntermedio {
             this.npc = npcCopiado;
           }
         
-          public ArrayList getIr(){
+          public int[] getIr(){
             return this.ir;
           }
         
-          public void setIr(ArrayList irCopiado){
+          public void setIr(int[] irCopiado){
             this.ir = irCopiado;
           }
         
@@ -79,17 +112,42 @@ public class RegistroIntermedio {
           public void setRegB(int nRegB){
             this.regB = nRegB;
           }
+
+          public boolean getlibre(){
+            return this.libre;
+          }
+        
+          public void setlibre(boolean libreCopiado){
+            this.libre = libreCopiado;
+          }
+
+          /**
+           * Metodo Singleton para controlar que solo se cree un objeto IF_ID.
+           * Controla que solo se maneje una instancia de memoria en el programa.
+           * @return Devuelve la memoria si esta ya existe.
+           */
+          public static ID_EX getInstancia() {
+            if (id_ex == null) {
+                id_ex = new ID_EX();
+            }
+              return id_ex;
+            }
+
+                    
     }
 
-    public class EX_MEM { //Estructura para registro intermedio EX_MEM
+    public static class EX_MEM { //Estructura para registro intermedio EX_MEM
         public int aluOutput;
         public int regB;
-        public ArrayList<Integer> ir;
+        public int[] ir;
+        public boolean libre;
+        private static EX_MEM ex_mem;        
 
         public EX_MEM(){
             aluOutput = 0;
             regB = 0;
-            ir = new ArrayList<Integer>(4);
+            ir = new int[4];
+            libre = true;
           }
         
           public int getaluOutput(){
@@ -108,24 +166,43 @@ public class RegistroIntermedio {
             this.regB = nRegB;
           }
         
-          public ArrayList getIr(){
+          public int[] getIr(){
             return this.ir;
           }
         
-          public void setIr(ArrayList irCopiado){
+          public void setIr(int[] irCopiado){
             this.ir = irCopiado;
-          }        
+          }
+             
+          public boolean getlibre(){
+            return this.libre;
+          }
+        
+          public void setlibre(boolean libreCopiado){
+            this.libre = libreCopiado;
+          }   
+
+          public static EX_MEM getInstancia() {
+            if (ex_mem == null) {
+              ex_mem = new EX_MEM();
+            }
+              return ex_mem;
+            }
+                    
     }                
 
-    public class MEM_WB { //Estructura para registro intermedio MEM_WB
+    public static class MEM_WB { //Estructura para registro intermedio MEM_WB
         public int aluOutput;
         public int lmd;
-        public ArrayList<Integer> ir;
+        public int[] ir;
+        public boolean libre;
+        private static MEM_WB mem_wb;        
         
         public MEM_WB() {
             aluOutput = 0;
             lmd = 0;
-            ir = new ArrayList<Integer>(4);
+            ir = new int[4];
+            libre = true;            
           }
         
           public int getaluOutput(){
@@ -144,12 +221,27 @@ public class RegistroIntermedio {
             this.lmd = lmdCopiado;
           }
         
-          public ArrayList getIr(){
+          public int[] getIr(){
             return this.ir;
           }
         
-          public void setIr(ArrayList irCopiado){
+          public void setIr(int[] irCopiado){
             this.ir = irCopiado;
-          }        
+          }       
+          
+          public boolean getlibre(){
+            return this.libre;
+          }
+        
+          public void setlibre(boolean libreCopiado){
+            this.libre = libreCopiado;
+          }
+
+          public static MEM_WB getInstancia() {
+            if (mem_wb == null) {
+                mem_wb = new MEM_WB();
+            }
+              return mem_wb;
+            }
     }       
 }
