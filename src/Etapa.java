@@ -1,17 +1,16 @@
 public class Etapa{
-    Etapa siguienteEtapa;
-    AdminConcurrencia adminConcurrencia;
-    RegistrosIFWB registrosIFWB;
-    RegistroIntermedio.IF_ID reg_IF_ID = RegistroIntermedio.IF_ID.getInstancia();
-    RegistroIntermedio.ID_EX reg_ID_EX = RegistroIntermedio.ID_EX.getInstancia();
-    RegistroIntermedio.EX_MEM reg_EX_MEM = RegistroIntermedio.EX_MEM.getInstancia();
-    RegistroIntermedio.MEM_WB reg_MEM_WB = RegistroIntermedio.MEM_WB.getInstancia();
+    public Etapa siguienteEtapa;
+    public AdminConcurrencia adminConcurrencia;
+    public RegistrosIDWB registrosIDWB = RegistrosIDWB.getInstancia();
+    public RegistroIntermedio.IF_ID reg_IF_ID = RegistroIntermedio.IF_ID.getInstancia();
+    public RegistroIntermedio.ID_EX reg_ID_EX = RegistroIntermedio.ID_EX.getInstancia();
+    public RegistroIntermedio.EX_MEM reg_EX_MEM = RegistroIntermedio.EX_MEM.getInstancia();
+    public RegistroIntermedio.MEM_WB reg_MEM_WB = RegistroIntermedio.MEM_WB.getInstancia();
 
 
     public Etapa(){
         siguienteEtapa = null;
         adminConcurrencia = new AdminConcurrencia();
-        registrosIFWB = new RegistrosIFWB();
     }
 
     public void ejecutarEtapa() throws InterruptedException {

@@ -156,6 +156,15 @@ public class Procesador {
         }
         }).start();
 
+        procesador.hiloID = new ID(idActual, procesador.contexto[idActual]);
+        new Thread(new Runnable() {
+
+        public void run() {
+            procesador.hiloID.run();
+        }
+        }).start();
+
+
   }
 
 }
