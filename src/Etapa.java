@@ -1,4 +1,4 @@
-public class Etapa{
+public class Etapa extends Thread{
     public Etapa siguienteEtapa;
     public AdminConcurrencia adminConcurrencia;
     public RegistrosIDWB registrosIDWB = RegistrosIDWB.getInstancia();

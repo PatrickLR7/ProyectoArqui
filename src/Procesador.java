@@ -164,12 +164,7 @@ public class Procesador {
               if (!colaIDs.isEmpty() &&  procesador.hiloIF == null) {
 
                 procesador.hiloIF = new IF(hililloActual, procesador.contexto[hililloActual]);
-                new Thread(new Runnable() {
-
-                public void run() {
-                    procesador.hiloIF.run();
-                }
-                }).start();
+                procesador.hiloIF.start();
 
               }
 
@@ -177,13 +172,7 @@ public class Procesador {
               if (!colaIDs.isEmpty() &&  procesador.hiloID == null) {
 
                 procesador.hiloID = new ID(hililloActual, procesador.contexto[hililloActual]);
-                new Thread(new Runnable() {
-
-                public void run() {
-                    procesador.hiloID.run();
-                }
-                }).start();
-
+                procesador.hiloID.start();
               }
 
 
@@ -198,11 +187,16 @@ public class Procesador {
                          //Hacer Khé?!?!?!?!?!?!?!
 
                         if (procesador.hiloIF != null && procesador.hiloID != null && procesador.ciclosRelojHililloActual > procesador.quantum) {
-                            //procesador.hiloIF.stop();
-                            //procesador.hiloID.stop();
-                            //procesador.hiloEX.stop();
-                            //procesador.hiloMem.stop();
-                            //procesador.hiloWB.stop();
+                            try{
+                                procesador.hiloIF.join();
+                                procesador.hiloID.join();
+                                //procesador.hiloEX.stop();
+                                //procesador.hiloMem.stop();
+                                //procesador.hiloWB.stop();
+                            } catch (Exception e){
+
+                            }
+
                             //Copiar de registros IFWB a contexto.
 
                             
