@@ -8,6 +8,8 @@ private int[] IR;
 private int[] registro;
 private int pc; 
 private int idHilillo;
+public boolean terminoQuantum;
+
 
 
 private int cacheInst[][];
@@ -16,6 +18,7 @@ private int cacheInst[][];
 		
 		//columna 16 de caccheInst = Etiqueta
 		//  0 = invalido; 1 = compartido; 2 = modificado.
+		terminoQuantum = false;
 
 		cacheInst = new int[4][17];
 		IR = new int[4];
@@ -32,12 +35,16 @@ private int cacheInst[][];
 
 	public void run() {
 		
-		try{
-			ejecutarEtapa();
-		} catch (InterruptedException e){
-			System.out.println("Interrupted Exception: " + e);
-		}
+      while(true){
+		if(terminoQuantum == false){
 
+			try{
+				ejecutarEtapa();
+			} catch (InterruptedException e){
+				System.out.println("Interrupted Exception: " + e);
+			}
+		}
+	  }
 	}
 
 
@@ -56,6 +63,9 @@ private int cacheInst[][];
 		numPalabra = pc % 16;
 		posCacheI = bloque % 4;
 
+
+
+	
 		//Revisar si el bloque está en la CacheI y si no está traerlo
 		if(bloque != cacheInst[posCacheI][16]){
 
@@ -75,17 +85,21 @@ private int cacheInst[][];
                 numPalabra++;
 			}
 			
+			//barrera
+			super.manejarBarrera();
 
 			super.reg_IF_ID.ir = IR;
 			super.reg_IF_ID.npc = pc;
 
+			super.manejarBarrera();
 	
+		
 			imprimirCache();
 
 		}
 
 
-		//super.manejarBarrera();
+		
 	}
 
 

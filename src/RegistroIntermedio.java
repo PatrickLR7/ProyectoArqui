@@ -15,6 +15,8 @@ public class RegistroIntermedio {
         public int[] ir;
         public boolean libre;
         private static IF_ID if_id;
+        private boolean banderaIFNoSiga; // ID le indica a IF que no siga.
+        private boolean banderaIDNoSiga; //IF le indica a ID que no le va a llegar nada porque IF está en fallo o porque ya termino el quantum.
 
         public IF_ID(){
             npc = 0;
@@ -70,7 +72,9 @@ public class RegistroIntermedio {
         public int regB;
         public int imm;
         public boolean libre;  
-        private static ID_EX id_ex;      
+        private static ID_EX id_ex;
+        private boolean banderaIDNoSiga; //EX le indica a ID que no siga.
+        private boolean banderaEXNoSiga; //ID le indica a EX que no le va a llegar nada.      
 
         public ID_EX(){
             npc = 0;
@@ -142,6 +146,8 @@ public class RegistroIntermedio {
         public int[] ir;
         public boolean libre;
         private static EX_MEM ex_mem;        
+        private boolean banderaEXSiga; //MEM le dice a EX que no siga ya que MEM está en fallo.
+        private boolean banderaMEMNoSiga; //EX le dice a MEM que no le va a llegar nada.
 
         public EX_MEM(){
             aluOutput = 0;
@@ -196,7 +202,9 @@ public class RegistroIntermedio {
         public int lmd;
         public int[] ir;
         public boolean libre;
-        private static MEM_WB mem_wb;        
+        private static MEM_WB mem_wb;
+        private boolean banderaMEMSiga; //WB le dice a MEM que no siga.
+        private boolean banderaWBNoSiga; //MEM le dice a WB que no le va a llegar nada.       
         
         public MEM_WB() {
             aluOutput = 0;

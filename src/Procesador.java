@@ -13,7 +13,9 @@ public class Procesador {
 
 
   public int ciclosReloj;
-
+  public int ciclosRelojHililloActual;
+  public int quantum;
+  
   //private int[][] registros; //Estructura para manejar cada registro con su estado.
 
   public int contexto[][]; //Estructura para manejar el contexto de los hilillos. Cada fila representa un hilillo. Dentro de la fila pos 32 es el PC y 0 a 31 son los registros.
@@ -26,10 +28,16 @@ public class Procesador {
   public WB hiloWB;
 
 
+
+
+
     public Procesador(){
 
         ciclosReloj = 0;
+        ciclosRelojHililloActual = 0;
+        quantum = 10; //para pruebas
 
+       
         contexto = new int[7][33];
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 33; j++) {
@@ -42,7 +50,7 @@ public class Procesador {
         hiloEX = null;
         hiloMem = null;
         hiloWB = null;
-
+        
 
     }
 
@@ -113,6 +121,7 @@ public class Procesador {
        int  pc=0;
 
     MemoriaPrincipal memoriaPrincipal = MemoriaPrincipal.getInstancia();
+    AdminConcurrencia adminConcurrencia = AdminConcurrencia.getInstancia();
 
     Queue<Integer> colaIDs = new ArrayDeque<>();
 
@@ -141,30 +150,85 @@ public class Procesador {
         System.out.println("CONTEXTO");
         procesador.imprimirContexto(); 
        
-        
        
 
 
-        int idActual = colaIDs.poll();
+
+        int hililloActual;
+       
+        while (true) {
 
 
-        procesador.hiloIF = new IF(idActual, procesador.contexto[idActual]);
-        new Thread(new Runnable() {
+                hililloActual = colaIDs.poll();
+ 
+              if (!colaIDs.isEmpty() &&  procesador.hiloIF == null) {
 
-        public void run() {
-            procesador.hiloIF.run();
+                procesador.hiloIF = new IF(hililloActual, procesador.contexto[hililloActual]);
+                new Thread(new Runnable() {
+
+                public void run() {
+                    procesador.hiloIF.run();
+                }
+                }).start();
+
+              }
+
+
+              if (!colaIDs.isEmpty() &&  procesador.hiloID == null) {
+
+                procesador.hiloID = new ID(hililloActual, procesador.contexto[hililloActual]);
+                new Thread(new Runnable() {
+
+                public void run() {
+                    procesador.hiloID.run();
+                }
+                }).start();
+
+              }
+
+
+
+                while(true){
+
+                    //libereBarrera == true?
+                    if(procesador.hiloIF.getLibereBarrera() == true){
+                         procesador.ciclosReloj++;
+                         procesador.ciclosRelojHililloActual++;
+
+                         //Hacer Khé?!?!?!?!?!?!?!
+
+                        if (procesador.hiloIF != null && procesador.hiloID != null && procesador.ciclosRelojHililloActual > procesador.quantum) {
+                            //procesador.hiloIF.stop();
+                            //procesador.hiloID.stop();
+                            //procesador.hiloEX.stop();
+                            //procesador.hiloMem.stop();
+                            //procesador.hiloWB.stop();
+                            //Copiar de registros IFWB a contexto.
+
+                            
+                        }
+        
+                    }
+                        //libere
+
+                }
+
+                       
+
+
+                }
+
+                    //if estado terminadoIF true
+                        //aumente ciclo
+                    //if estado terminadoID true
+                        //aumente ciclo
+
+               
+
+                  
+
+
+
         }
-        }).start();
-
-        procesador.hiloID = new ID(idActual, procesador.contexto[idActual]);
-        new Thread(new Runnable() {
-
-        public void run() {
-            procesador.hiloID.run();
-        }
-        }).start();
-
-
-  }
 
 }

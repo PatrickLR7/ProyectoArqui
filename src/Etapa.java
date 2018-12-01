@@ -6,7 +6,7 @@ public class Etapa{
     public RegistroIntermedio.ID_EX reg_ID_EX = RegistroIntermedio.ID_EX.getInstancia();
     public RegistroIntermedio.EX_MEM reg_EX_MEM = RegistroIntermedio.EX_MEM.getInstancia();
     public RegistroIntermedio.MEM_WB reg_MEM_WB = RegistroIntermedio.MEM_WB.getInstancia();
-
+    public boolean libereBarrera;   
 
     public Etapa(){
         siguienteEtapa = null;
@@ -26,6 +26,15 @@ public class Etapa{
 
         */
     }
+
+    public void setLibereBarrera(boolean libBarrera){
+        libereBarrera = libBarrera;
+    }
+
+    public boolean getLibereBarrera(){
+            return libereBarrera;
+    }
+
 
     public Etapa getSiguienteEtapa(){
         return siguienteEtapa;
