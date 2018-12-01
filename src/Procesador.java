@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Queue;
 import java.util.ArrayDeque;
-
+import java.util.concurrent.Phaser;
 
 public class Procesador {
 
@@ -14,6 +14,13 @@ public class Procesador {
 
   public int ciclosReloj;
   public int ciclosRelojHililloActual;
+  public int ciclosRelojH0;
+  public int ciclosRelojH1;
+  public int ciclosRelojH2;
+  public int ciclosRelojH3;
+  public int ciclosRelojH4;
+  public int ciclosRelojH5;
+  public int ciclosRelojH6;
   public int quantum;
   
   //private int[][] registros; //Estructura para manejar cada registro con su estado.
@@ -27,7 +34,7 @@ public class Procesador {
   public Mem hiloMem;
   public WB hiloWB;
 
-
+  public Phaser ph;
 
 
 
@@ -51,6 +58,8 @@ public class Procesador {
         hiloMem = null;
         hiloWB = null;
         
+        ph = new Phaser(1);
+
 
     }
 
@@ -159,63 +168,92 @@ public class Procesador {
         while (true) {
 
 
-                hililloActual = colaIDs.poll();
  
-              if (!colaIDs.isEmpty() &&  procesador.hiloIF == null) {
+              if (!colaIDs.isEmpty() &&  procesador.hiloIF == null  &&  procesador.hiloID == null) {
 
-                procesador.hiloIF = new IF(hililloActual, procesador.contexto[hililloActual]);
+                hililloActual = colaIDs.poll();
+                procesador.ciclosRelojHililloActual = 0;
+                procesador.hiloIF = new IF(hililloActual, procesador.contexto[hililloActual],procesador.ph);
+                procesador.hiloID = new ID(hililloActual, procesador.contexto[hililloActual],procesador.ph); 
+                procesador.hiloWB = new WB(hililloActual);
+
+                System.out.println("hilos creados");
+
                 procesador.hiloIF.start();
-
-              }
-
-
-              if (!colaIDs.isEmpty() &&  procesador.hiloID == null) {
-
-                procesador.hiloID = new ID(hililloActual, procesador.contexto[hililloActual]);
                 procesador.hiloID.start();
+
+                System.out.println("hilos Start");
+
+              }else{
+
+                procesador.hiloIF.run();
+                procesador.hiloID.run();
+                System.out.println("hilos Run");
               }
 
+              
 
+            
 
-                while(true){
-
-                    //libereBarrera == true?
                     if(procesador.hiloIF.getLibereBarrera() == true){
-                         procesador.ciclosReloj++;
-                         procesador.ciclosRelojHililloActual++;
 
-                         //Hacer Khé?!?!?!?!?!?!?!
+                        procesador.ciclosReloj++;
+                        procesador.ciclosRelojHililloActual++;
+                        procesador.ciclosRelojH0++;
+                        procesador.ciclosRelojH1++;
+                        procesador.ciclosRelojH2++;
+                        procesador.ciclosRelojH3++;
+                        procesador.ciclosRelojH4++;
+                        procesador.ciclosRelojH5++;
+                        procesador.ciclosRelojH6++;
+                         
+                        
 
                         if (procesador.hiloIF != null && procesador.hiloID != null && procesador.ciclosRelojHililloActual > procesador.quantum) {
                             try{
                                 procesador.hiloIF.join();
                                 procesador.hiloID.join();
-                                //procesador.hiloEX.stop();
-                                //procesador.hiloMem.stop();
-                                //procesador.hiloWB.stop();
+                                //procesador.hiloEX.join();
+                                //procesador.hiloMem.join();
+                                //procesador.hiloWB.join();
+
+                                System.arraycopy(procesador.hiloWB.registrosIDWB , 0, procesador.contexto[procesador.hiloWB.getIdHilillo()], 0, 32);
+                                procesador.contexto[procesador.hiloWB.getIdHilillo()][32] = procesador.hiloWB.reg_MEM_WB.npc;
+                                colaIDs.add(procesador.hiloWB.getIdHilillo());
+                                
+                                procesador.hiloIF = null;
+                                procesador.hiloID = null;
+                                //procesador.hiloEX = null;
+                                //procesador.hiloMem = null;
+                                //procesador.hiloWB = null;
+
                             } catch (Exception e){
 
                             }
 
-                            //Copiar de registros IFWB a contexto.
 
                             
                         }
+
+
+
+                       // procesador.hiloIF.setLibereBarrera(false) ;
+
+                        //adminConcurrencia.barrera2DeEtapas.release(4);
         
                     }
-                        //libere
 
-                }
+                    
+                        
+
+
 
                        
 
 
                 }
 
-                    //if estado terminadoIF true
-                        //aumente ciclo
-                    //if estado terminadoID true
-                        //aumente ciclo
+                 
 
                
 

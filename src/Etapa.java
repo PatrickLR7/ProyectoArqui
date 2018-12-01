@@ -1,3 +1,5 @@
+import java.util.concurrent.Phaser;
+
 public class Etapa extends Thread{
     public Etapa siguienteEtapa;
     public AdminConcurrencia adminConcurrencia;
@@ -44,18 +46,80 @@ public class Etapa extends Thread{
         this.siguienteEtapa = siguienteEtapa;
     }
 
+
     public void manejarBarrera() throws InterruptedException{
-        adminConcurrencia.mutexEtapasFinalizadas.acquire();
+       adminConcurrencia.mutexEtapasFinalizadas.acquire();
         if(adminConcurrencia.etapasFinalizadas == 4){
             //TODO aquí hay que tomar en cuenta manejar lógica de liberar de derecha a izquierda.
 
-            adminConcurrencia.barreraDeEtapas.release(4);
+          
+            adminConcurrencia.barrera2DeEtapas.release(4);
             adminConcurrencia.mutexEtapasFinalizadas.release();
         } else {
             adminConcurrencia.etapasFinalizadas++;
             adminConcurrencia.mutexEtapasFinalizadas.release();
-            adminConcurrencia.barreraDeEtapas.acquire();
+            adminConcurrencia.barrera2DeEtapas.acquire();
         }
+    }
+    
+
+    public void manejarBarrera2() throws InterruptedException{
+        adminConcurrencia.mutexEtapasFinalizadas.acquire();
+        if(adminConcurrencia.etapasFinalizadas == 4){
+            //TODO aquí hay que tomar en cuenta manejar lógica de liberar de derecha a izquierda.
+
+            libereBarrera=true;
+            //adminConcurrencia.barrera2DeEtapas.release(4);
+            adminConcurrencia.mutexEtapasFinalizadas.release();
+        } else {
+            adminConcurrencia.etapasFinalizadas++;
+            adminConcurrencia.mutexEtapasFinalizadas.release();
+            adminConcurrencia.barrera2DeEtapas.acquire();
+        }
+    }
+
+    public void barreraMEM() throws InterruptedException{
+      
+        adminConcurrencia.barreraMEM.acquire();
+       
+    }
+
+    public void releaseBarreraMEM() throws InterruptedException{
+        adminConcurrencia.barreraMEM.release();
+    }
+
+    public void barreraEX() throws InterruptedException{
+       
+        adminConcurrencia.barreraEX.acquire();
+       
+    }
+
+    public void releaseBarreraEX() throws InterruptedException{
+        adminConcurrencia.barreraEX.release();
+    }
+
+    public void barreraID() throws InterruptedException{
+       
+        adminConcurrencia.barreraID.acquire();
+       
+    }
+
+    public void releaseBarreraID() throws InterruptedException{
+        adminConcurrencia.barreraID.release();
+    }
+
+
+    public void barreraIF() throws InterruptedException{
+        System.out.println("AdquiriendoCandadoIF");
+        adminConcurrencia.barreraIF.acquire();
+        System.out.println("TengoCandadoIF");
+       
+    }
+
+    public void releaseBarreraIF() throws InterruptedException{
+        System.out.println("SoltandoCandadoIF");
+        adminConcurrencia.barreraIF.release();
+        System.out.println("SoltadoCandadoIF");
     }
 
 }

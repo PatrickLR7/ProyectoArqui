@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.concurrent.Phaser;
+
 public class IF extends Etapa implements Runnable{
 
 
@@ -8,18 +10,17 @@ private int[] IR;
 private int[] registro;
 private int pc; 
 private int idHilillo;
-public boolean terminoQuantum;
+Phaser ph;
 
 
 
 private int cacheInst[][];
 
-	public IF( int id, int[] contextoHilillo) {
+	public IF( int id, int[] contextoHilillo, Phaser phaser) {
 		
 		//columna 16 de caccheInst = Etiqueta
 		//  0 = invalido; 1 = compartido; 2 = modificado.
-		terminoQuantum = false;
-
+		
 		cacheInst = new int[4][17];
 		IR = new int[4];
 		pc = contextoHilillo[32];
@@ -30,21 +31,25 @@ private int cacheInst[][];
                 cacheInst[i][j] = -1;
 			}
 		}
+
+		ph=phaser;
+
 	}
 
 
 	public void run() {
 		
-      while(true){
-		if(terminoQuantum == false){
-
+    
+		
 			try{
 				ejecutarEtapa();
 			} catch (InterruptedException e){
 				System.out.println("Interrupted Exception: " + e);
 			}
-		}
-	  }
+	
+	
+
+
 	}
 
 
@@ -85,13 +90,17 @@ private int cacheInst[][];
                 numPalabra++;
 			}
 			
-			//barrera
-			super.manejarBarrera();
+			
+			
+
+			super.barreraIF();
 
 			super.reg_IF_ID.ir = IR;
 			super.reg_IF_ID.npc = pc;
 
-			super.manejarBarrera();
+			
+			super.manejarBarrera2();
+			
 	
 		
 			imprimirCache();

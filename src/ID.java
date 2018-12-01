@@ -1,3 +1,5 @@
+import java.util.concurrent.Phaser;
+
 public class ID extends Etapa implements Runnable {
 
 
@@ -6,9 +8,10 @@ public class ID extends Etapa implements Runnable {
 	private int reg1;
 	private int reg2;
 	private int inm;
+	private int pc;
+	private Phaser ph;
 
-
-    public ID(int id, int[] contextoHilillo) {
+    public ID(int id, int[] contextoHilillo, Phaser phaser) {
 
 		IR = new int[4];
 		regIDWB = super.registrosIDWB;
@@ -22,18 +25,23 @@ public class ID extends Etapa implements Runnable {
 		}
 		
 		regIDWB.registros[0][33] = -1;
+
+		ph=phaser;
 	}
 	
 	public void run() {
-		
+		try{
+			ejecutarEtapa();
+		} catch (InterruptedException e){
+			System.out.println("Interrupted Exception: " + e);
+		}
 	}
 
 	@Override
-	public void ejecutarEtapa(){
-		//TODO hacer lo respectivo.
-
+	public void ejecutarEtapa() throws InterruptedException{
 
 		IR = super.reg_IF_ID.ir;
+		pc = super.reg_IF_ID.npc;
 		reg1 = IR[2];
 		reg2 = IR[3];
 		inm = IR[3];
@@ -178,12 +186,17 @@ public class ID extends Etapa implements Runnable {
 
 		}								
 
-		
+	
 
+		super.barreraID();
 
+		//copia a registroIntermedioEX
+		super.reg_ID_EX.ir = IR;
+		super.reg_ID_EX.npc = pc;
 
+		super.releaseBarreraIF();
 
-
+		super.manejarBarrera2();
 	}
 
 }
