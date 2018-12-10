@@ -9,9 +9,13 @@ public class EX extends Etapa implements Runnable{
 	private int dir;
 	private int aluOutput;
 	private int npc;
+	private Phaser phaser1;
+	private Phaser phaser2;
+	private Phaser phaserID_EX;
+	private Phaser phaserEX_MEM;
 
     
-    public EX(int id) {
+    public EX(int id, Phaser phaser1, Phaser phaser2, Phaser phaserID_EX, Phaser phaserEX_MEM) {
 		int[] IR = new int[4];
 		int reg1 = -1;
 	 	int reg2 = -1;
@@ -19,6 +23,18 @@ public class EX extends Etapa implements Runnable{
 		int dir = -1;
 		int aluOutput = -1;
 		int npc = -1;
+
+		this.phaser1 = phaser1;
+		this.phaser2 = phaser2;
+		this.phaserID_EX = phaserID_EX;
+		this.phaserEX_MEM = phaserEX_MEM;
+
+		/*this.phaser1.register();
+		this.phaser2.register();
+		this.phaserID_EX.register();
+		this.phaserEX_MEM.register();
+		*/
+
 	}
 	
 
@@ -80,8 +96,10 @@ public class EX extends Etapa implements Runnable{
 		}
 
 
-	
-		super.barreraEX();
+		System.out.println("Pasó0EX");
+		phaser1.arriveAndAwaitAdvance();
+		System.out.println("Pasó1EX");
+		phaserEX_MEM.arriveAndAwaitAdvance();
 
 		//copia a registroIntermedioMEM
 		super.reg_EX_MEM.npc = npc;
@@ -89,10 +107,12 @@ public class EX extends Etapa implements Runnable{
 		super.reg_EX_MEM.ir = IR;
 		super.reg_EX_MEM.regB = reg2;
 
-		super.releaseBarreraID();
+		phaserID_EX.arriveAndAwaitAdvance();
+		phaser2.arriveAndAwaitAdvance();
 
-
-
-		super.manejarBarrera2();
+		phaser1.arriveAndDeregister();
+		phaserEX_MEM.arriveAndDeregister();
+		phaserID_EX.arriveAndDeregister();
+		phaser2.arriveAndDeregister();
 	}
 }

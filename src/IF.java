@@ -10,13 +10,16 @@ private int[] IR;
 private int[] registro;
 private int pc; 
 private int idHilillo;
-Phaser ph;
+
+Phaser phaser1;
+Phaser phaser2;
+Phaser phaserIF_ID;
 
 
 
 private int cacheInst[][];
 
-	public IF( int id, int[] contextoHilillo, Phaser phaser) {
+	public IF( int id, int[] contextoHilillo, Phaser phaser1, Phaser phaser2, Phaser phaserIF_ID) {
 		
 		//columna 16 de caccheInst = Etiqueta
 		//  0 = invalido; 1 = compartido; 2 = modificado.
@@ -32,8 +35,15 @@ private int cacheInst[][];
 			}
 		}
 
-		ph=phaser;
+		this.phaser1 = phaser1;
+		this.phaser2 = phaser2;
+		this.phaserIF_ID = phaserIF_ID;
 
+		/*this.phaser1.register();
+		this.phaser2.register();
+		this.phaserIF_ID.register();
+		//System.out.println( phaser1.getRegisteredParties() );
+		*/
 	}
 
 
@@ -93,18 +103,26 @@ private int cacheInst[][];
 			
 			
 
-			super.barreraIF();
-
+			//super.barreraIF();
+			System.out.println("Pasó0IF");
+			phaser1.arriveAndAwaitAdvance();
+			System.out.println("Pasó1IF");
+			phaserIF_ID.arriveAndAwaitAdvance();
+			System.out.println("Pasó2");
 			super.reg_IF_ID.ir = IR;
 			super.reg_IF_ID.npc = pc;
 
 			
-			super.manejarBarrera2();
-			
+			phaser2.arriveAndAwaitAdvance();
+			System.out.println("Pasó3");
 	
 		
 			imprimirCache();
 
+
+			phaser1.arriveAndDeregister();
+			phaserIF_ID.arriveAndDeregister();
+			phaser2.arriveAndDeregister();
 		}
 
 

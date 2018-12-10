@@ -9,9 +9,12 @@ public class ID extends Etapa implements Runnable {
 	private int reg2;
 	private int inm;
 	private int pc;
-	private Phaser ph;
+	private Phaser phaser1;
+	private Phaser phaser2;
+	private Phaser phaserIF_ID;
+	private Phaser phaserID_EX;
 
-    public ID(int id, int[] contextoHilillo, Phaser phaser) {
+    public ID(int id, int[] contextoHilillo, Phaser phaser1, Phaser phaser2, Phaser phaserIF_ID, Phaser phaserID_EX) {
 
 		IR = new int[4];
 		regIDWB = super.registrosIDWB;
@@ -26,7 +29,16 @@ public class ID extends Etapa implements Runnable {
 		
 		regIDWB.registros[0][33] = -1;
 
-		ph=phaser;
+		this.phaser1 = phaser1;
+		this.phaser2 = phaser2;
+		this.phaserIF_ID = phaserIF_ID;
+		this.phaserID_EX = phaserID_EX;
+
+		/*this.phaser1.register();
+		this.phaser2.register();
+		this.phaserIF_ID.register();
+		this.phaserID_EX.register();
+		*/
 	}
 	
 	public void run() {
@@ -187,16 +199,23 @@ public class ID extends Etapa implements Runnable {
 		}								
 
 	
-
-		super.barreraID();
+		System.out.println("Pasó0ID");
+		phaser1.arriveAndAwaitAdvance();
+		System.out.println("Pasó1ID");
+		phaserID_EX.arriveAndAwaitAdvance();
 
 		//copia a registroIntermedioEX
 		super.reg_ID_EX.ir = IR;
 		super.reg_ID_EX.npc = pc;
 
-		super.releaseBarreraIF();
+		phaserIF_ID.arriveAndAwaitAdvance();
+		phaser2.arriveAndAwaitAdvance();
 
-		super.manejarBarrera2();
+		phaser1.arriveAndDeregister();
+		phaserID_EX.arriveAndDeregister();
+		phaserIF_ID.arriveAndDeregister();
+		phaser2.arriveAndDeregister();
+
 	}
 
 }

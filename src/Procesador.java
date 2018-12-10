@@ -10,8 +10,6 @@ import java.util.concurrent.Phaser;
 
 public class Procesador {
 
-
-
   public int ciclosReloj;
   public int ciclosRelojHililloActual;
   public int ciclosRelojH0;
@@ -31,13 +29,16 @@ public class Procesador {
   public IF hiloIF;
   public ID hiloID;
   public EX hiloEX;
-  public Mem hiloMem;
+  public Mem hiloMEM;
   public WB hiloWB;
 
-  public Phaser ph;
-
-
-
+  public Phaser phaser1;
+  public Phaser phaser2;
+  public Phaser phaserIF_ID;
+  public Phaser phaserID_EX;
+  public Phaser phaserEX_MEM;
+  public Phaser phaserMEM_WB;
+ 
     public Procesador(){
 
         ciclosReloj = 0;
@@ -55,10 +56,20 @@ public class Procesador {
         hiloIF = null;
         hiloID = null;
         hiloEX = null;
-        hiloMem = null;
+        hiloMEM = null;
         hiloWB = null;
         
-        ph = new Phaser(1);
+
+        phaser1 = new Phaser(6); //Aquí esperan los 5 procesos de las etapas + proceso principal (Procesador), total = 6 procesos.
+        phaser2 = new Phaser(6); //Aquí esperan los 5 procesos de las etapas + proceso principal (Procesador), total = 6 procesos.
+        phaserIF_ID = new Phaser(2); //Aquí esperan etapas IF e ID. Para controlar liberado de reg intermedios. total = 2 procesos.
+        phaserID_EX = new Phaser(2); //Aquí esperan etapas ID e EX. Para controlar liberado de reg intermedios. total = 2 procesos.
+        phaserEX_MEM = new Phaser(2); //Aquí esperan etapas EX e MEM. Para controlar liberado de reg intermedios. total = 2 procesos.
+        phaserMEM_WB = new Phaser(2); //Aquí esperan etapas MEM e WB. Para controlar liberado de reg intermedios. total = 2 procesos.
+
+        //phaser2.register();
+        //phaser1.register();
+        System.out.println( phaser1.getRegisteredParties() );
 
 
     }
@@ -95,11 +106,7 @@ public class Procesador {
         }
         return instrucciones.toString();
 
-
-
     }
-
-
 
      /**
      * Metodo que llena el PC del hilillo en su contexto.
@@ -122,7 +129,6 @@ public class Procesador {
         System.out.println(md);
     }
 
-
   public static void main(String[] args) {
     
     Procesador procesador = new Procesador();
@@ -144,9 +150,6 @@ public class Procesador {
 
     }
 
-
-
-
         //IMPRIMIR MEMORIA DATOS
         System.out.println("MEMORIA DE DATOS");
         memoriaPrincipal.imprimirMemoria();
@@ -159,28 +162,37 @@ public class Procesador {
         System.out.println("CONTEXTO");
         procesador.imprimirContexto(); 
        
-       
-
-
 
         int hililloActual;
        
         while (true) {
+            //procesador.phaser1.bulkRegister(6); 
+            //procesador.phaser2.bulkRegister(6); 
+            //procesador.phaserIF_ID.bulkRegister(2); 
+            //procesador.phaserID_EX.bulkRegister(2); 
+            //procesador.phaserEX_MEM.bulkRegister(2);
+            //procesador.phaserMEM_WB.bulkRegister(2);
 
-
+            
  
+            
               if (!colaIDs.isEmpty() &&  procesador.hiloIF == null  &&  procesador.hiloID == null) {
 
                 hililloActual = colaIDs.poll();
                 procesador.ciclosRelojHililloActual = 0;
-                procesador.hiloIF = new IF(hililloActual, procesador.contexto[hililloActual],procesador.ph);
-                procesador.hiloID = new ID(hililloActual, procesador.contexto[hililloActual],procesador.ph); 
-                procesador.hiloWB = new WB(hililloActual);
+                procesador.hiloIF = new IF(hililloActual, procesador.contexto[hililloActual],procesador.phaser1, procesador.phaser2, procesador.phaserIF_ID );
+                procesador.hiloID = new ID(hililloActual, procesador.contexto[hililloActual],procesador.phaser1, procesador.phaser2, procesador.phaserIF_ID, procesador.phaserID_EX); 
+                procesador.hiloEX = new EX(hililloActual, procesador.phaser1, procesador.phaser2, procesador.phaserID_EX, procesador.phaserEX_MEM );
+                procesador.hiloMEM= new Mem(hililloActual, procesador.phaser1, procesador.phaser2, procesador.phaserEX_MEM, procesador.phaserMEM_WB);
+                procesador.hiloWB = new WB(hililloActual, procesador.contexto[hililloActual],procesador.phaser1, procesador.phaser2, procesador.phaserMEM_WB);
 
                 System.out.println("hilos creados");
 
                 procesador.hiloIF.start();
                 procesador.hiloID.start();
+                procesador.hiloEX.start();
+                procesador.hiloMEM.start();
+                procesador.hiloWB.start();
 
                 System.out.println("hilos Start");
 
@@ -188,14 +200,14 @@ public class Procesador {
 
                 procesador.hiloIF.run();
                 procesador.hiloID.run();
+                procesador.hiloEX.run();
+                procesador.hiloMEM.run();
+                procesador.hiloWB.run();
+
                 System.out.println("hilos Run");
               }
 
-              
-
-            
-
-                    if(procesador.hiloIF.getLibereBarrera() == true){
+                    procesador.phaser1.arriveAndAwaitAdvance();
 
                         procesador.ciclosReloj++;
                         procesador.ciclosRelojHililloActual++;
@@ -206,16 +218,14 @@ public class Procesador {
                         procesador.ciclosRelojH4++;
                         procesador.ciclosRelojH5++;
                         procesador.ciclosRelojH6++;
-                         
-                        
 
                         if (procesador.hiloIF != null && procesador.hiloID != null && procesador.ciclosRelojHililloActual > procesador.quantum) {
                             try{
                                 procesador.hiloIF.join();
                                 procesador.hiloID.join();
-                                //procesador.hiloEX.join();
-                                //procesador.hiloMem.join();
-                                //procesador.hiloWB.join();
+                                procesador.hiloEX.join();
+                                procesador.hiloMEM.join();
+                                procesador.hiloWB.join();
 
                                 System.arraycopy(procesador.hiloWB.registrosIDWB , 0, procesador.contexto[procesador.hiloWB.getIdHilillo()], 0, 32);
                                 procesador.contexto[procesador.hiloWB.getIdHilillo()][32] = procesador.hiloWB.reg_MEM_WB.npc;
@@ -223,9 +233,9 @@ public class Procesador {
                                 
                                 procesador.hiloIF = null;
                                 procesador.hiloID = null;
-                                //procesador.hiloEX = null;
-                                //procesador.hiloMem = null;
-                                //procesador.hiloWB = null;
+                                procesador.hiloEX = null;
+                                procesador.hiloMEM = null;
+                                procesador.hiloWB = null;
 
                             } catch (Exception e){
 
@@ -236,31 +246,11 @@ public class Procesador {
                         }
 
 
+                    procesador.phaser2.arriveAndAwaitAdvance();
+    
 
-                       // procesador.hiloIF.setLibereBarrera(false) ;
-
-                        //adminConcurrencia.barrera2DeEtapas.release(4);
-        
-                    }
-
-                    
-                        
-
-
-
-                       
-
+                    System.out.println("Pasó");
 
                 }
-
-                 
-
-               
-
-                  
-
-
-
         }
-
 }

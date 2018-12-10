@@ -1,16 +1,32 @@
+import java.util.concurrent.Phaser;
+
+
 public class WB extends Etapa implements Runnable {
 
 	private int[] IR;
 	private RegistrosIDWB regIDWB;
 	private int regDestino;
 	private int idHilillo;
+	private Phaser phaser1;
+	private Phaser phaser2;
+	private Phaser phaserMEM_WB;
 
 
-    public WB( int id) {
+    public WB(int id, int[] contextoHilillo, Phaser phaser1, Phaser phaser2, Phaser phaserMEM_WB) {
 
 
 		idHilillo = id;
 		regIDWB = super.registrosIDWB;
+		this.IR = super.reg_MEM_WB.ir;
+
+		this.phaser1 = phaser1;
+		this.phaser2 = phaser2;
+		this.phaserMEM_WB = phaserMEM_WB;
+
+		//this.phaser1.register();
+		//this.phaser2.register();
+		//this.phaserMEM_WB.register();
+
 	}
 	
 	public void run() {
@@ -46,10 +62,16 @@ public class WB extends Etapa implements Runnable {
 		}
 
 	
+		System.out.println("Pasó0WB");
+		phaser1.arriveAndAwaitAdvance();
+		System.out.println("Pasó1WB");
+		phaserMEM_WB.arriveAndAwaitAdvance();
+		phaser2.arriveAndAwaitAdvance();
 
-		super.releaseBarreraMEM();
-
-		super.manejarBarrera2();
+		
+		phaser1.arriveAndDeregister();
+		phaserMEM_WB.arriveAndDeregister();
+		phaser2.arriveAndDeregister();
 
 
 	}
