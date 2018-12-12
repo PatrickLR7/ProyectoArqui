@@ -71,7 +71,11 @@ public class EX extends Etapa implements Runnable{
 					aluOutput = reg1 * reg2;
 					break;
 				case 56: //Es un DIV.
-					aluOutput = reg1 / reg2;
+					if(reg2 != 0){
+						aluOutput = reg1 / reg2;
+					} else {
+						aluOutput = Integer.MIN_VALUE;
+					}
 					break;
 			}
 		} else if(IR[0] == 5 || IR[0] == 37 || IR[0] == 51 || IR[0] == 52){ // Caso LW, SW, LR, SC, calcula dir de memoria con reg1 e inmediato
@@ -96,9 +100,9 @@ public class EX extends Etapa implements Runnable{
 		}
 
 
-		System.out.println("Pasó0EX");
+		
 		phaser1.arriveAndAwaitAdvance();
-		System.out.println("Pasó1EX");
+		
 		phaserEX_MEM.arriveAndAwaitAdvance();
 
 		//copia a registroIntermedioMEM

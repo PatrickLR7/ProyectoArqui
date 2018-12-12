@@ -89,8 +89,9 @@ private int cacheInst[][];
 			int bloqueEnMemoria = bloqueMem - 24;
 
 			
-			
-			System.arraycopy(memoriaPrincipal.memInstrucciones[bloqueEnMemoria].palabra, 0, cacheInst[posCacheI], 0, 16);
+			System.out.println("bloqueEnMemoria: " + bloqueEnMemoria);
+			System.out.println("posCacheI: " + posCacheI);
+			System.arraycopy(memoriaPrincipal.memInstrucciones[numPalabra].palabra, 0, cacheInst[posCacheI], 0, 16);
 
 			
 
@@ -104,17 +105,17 @@ private int cacheInst[][];
 			
 
 			//super.barreraIF();
-			System.out.println("Pasó0IF");
+		
 			phaser1.arriveAndAwaitAdvance();
-			System.out.println("Pasó1IF");
+		
 			phaserIF_ID.arriveAndAwaitAdvance();
-			System.out.println("Pasó2");
+			
 			super.reg_IF_ID.ir = IR;
 			super.reg_IF_ID.npc = pc;
 
 			
 			phaser2.arriveAndAwaitAdvance();
-			System.out.println("Pasó3");
+		
 	
 		
 			imprimirCache();

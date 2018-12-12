@@ -62,9 +62,9 @@ public class WB extends Etapa implements Runnable {
 		}
 
 	
-		System.out.println("Pasó0WB");
+		
 		phaser1.arriveAndAwaitAdvance();
-		System.out.println("Pasó1WB");
+	
 		phaserMEM_WB.arriveAndAwaitAdvance();
 		phaser2.arriveAndAwaitAdvance();
 

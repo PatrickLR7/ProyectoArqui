@@ -13,6 +13,10 @@ public class ID extends Etapa implements Runnable {
 	private Phaser phaser2;
 	private Phaser phaserIF_ID;
 	private Phaser phaserID_EX;
+	private int regA;
+	private int regB;
+	private int inmediato;
+	
 
     public ID(int id, int[] contextoHilillo, Phaser phaser1, Phaser phaser2, Phaser phaserIF_ID, Phaser phaserID_EX) {
 
@@ -55,7 +59,9 @@ public class ID extends Etapa implements Runnable {
 		IR = super.reg_IF_ID.ir;
 		pc = super.reg_IF_ID.npc;
 		reg1 = IR[2];
-		reg2 = IR[3];
+		if(IR[3] > 0){
+		 reg2 = IR[3];
+		}
 		inm = IR[3];
 
 			
@@ -66,8 +72,10 @@ public class ID extends Etapa implements Runnable {
 			
 			if(regIDWB.registros[1][reg1] == 0){
 				regIDWB.registros[1][reg1]++;
-				super.reg_ID_EX.regA = regIDWB.registros[0][reg1];
-				super.reg_ID_EX.regB = -1;
+				//super.reg_ID_EX.regA = regIDWB.registros[0][reg1];
+				//super.reg_ID_EX.regB = -1;
+				regA  = regIDWB.registros[0][reg1];
+				regB = -1;
 				
 			} else{
 				//no puede avanzar.
@@ -81,8 +89,11 @@ public class ID extends Etapa implements Runnable {
 			if(regIDWB.registros[1][reg1] == 0 && regIDWB.registros[1][reg2] == 0){
 				regIDWB.registros[1][reg1]++;
 				regIDWB.registros[1][reg2]++;
-				super.reg_ID_EX.regA = regIDWB.registros[0][reg1];
-				super.reg_ID_EX.regB = regIDWB.registros[0][reg2];
+				//super.reg_ID_EX.regA = regIDWB.registros[0][reg1];
+				//super.reg_ID_EX.regB = regIDWB.registros[0][reg2];
+				regA =  regIDWB.registros[0][reg1];
+				regB  = regIDWB.registros[0][reg2];
+				
 			} else{
 				//no puede avanzar.
 			}
@@ -93,20 +104,28 @@ public class ID extends Etapa implements Runnable {
 			
 			if(regIDWB.registros[1][reg1] == 0){
 				regIDWB.registros[1][reg1]++;
-				super.reg_ID_EX.regA = regIDWB.registros[0][reg1];
-				super.reg_ID_EX.regB = -1;
+				//super.reg_ID_EX.regA = regIDWB.registros[0][reg1];
+				//super.reg_ID_EX.regB = -1;
+				regA  = regIDWB.registros[0][reg1];
+				regB = -1;
 				
 			} else{
 				//no puede avanzar.
 			}
 		//caso sw	
 		} else if(IR[0] == 37){
-			if(regIDWB.registros[1][reg1] == 0 && regIDWB.registros[1][reg2] == 0){
+			System.out.println("Reg1: " + reg1 + " Reg2: " +reg2);
+			if(regIDWB.registros[1][reg1] == 0){
 				regIDWB.registros[1][reg1]++;
-				regIDWB.registros[1][reg2]++;
-				super.reg_ID_EX.regA = regIDWB.registros[0][IR[1]];
-				super.reg_ID_EX.regB = regIDWB.registros[0][IR[2]];
-				super.reg_ID_EX.imm = inm;
+				
+				//super.reg_ID_EX.regA = regIDWB.registros[0][IR[1]];
+				//super.reg_ID_EX.regB = regIDWB.registros[0][IR[2]];
+				//super.reg_ID_EX.imm = inm;
+				regA  = regIDWB.registros[0][IR[1]];
+				regB =  regIDWB.registros[0][IR[2]];
+				inmediato = inm;
+				
+				
 			} else{
 				//no puede avanzar.
 			}
@@ -117,10 +136,13 @@ public class ID extends Etapa implements Runnable {
 
 			if(regIDWB.registros[1][reg1] == 0){
 				regIDWB.registros[1][reg1]++;
-				super.reg_ID_EX.regB = regIDWB.registros[0][reg1];
-				super.reg_ID_EX.regA = -1;
-				super.reg_ID_EX.imm = -1;
-
+				//super.reg_ID_EX.regB = regIDWB.registros[0][reg1];
+				//super.reg_ID_EX.regA = -1;
+				//super.reg_ID_EX.imm = -1;
+				regA  = regIDWB.registros[0][reg1];
+				regB = -1;
+				inmediato = -1;
+				
 				//copiar reg1 en RL
 				regIDWB.registros[0][33]=reg1;
 
@@ -140,10 +162,14 @@ public class ID extends Etapa implements Runnable {
 
 					regIDWB.registros[1][reg1]++;
 					regIDWB.registros[1][reg2]++;
-					super.reg_ID_EX.regA = regIDWB.registros[0][IR[1]];
-					super.reg_ID_EX.regB = regIDWB.registros[0][IR[2]];
-					super.reg_ID_EX.imm = 0;
-
+					//super.reg_ID_EX.regA = regIDWB.registros[0][IR[1]];
+					//super.reg_ID_EX.regB = regIDWB.registros[0][IR[2]];
+					//super.reg_ID_EX.imm = 0;
+					regA  = regIDWB.registros[0][IR[1]];
+					regB = regIDWB.registros[0][IR[2]];
+					inmediato = 0;
+					
+					
 				}
 
 			} else {
@@ -154,15 +180,18 @@ public class ID extends Etapa implements Runnable {
 		} else if(IR[0] == 99 || IR[0] == 100){ 
 	
 			
-			if(regIDWB.registros[1][reg1] == 0 && regIDWB.registros[1][reg2] == 0){
+			if(regIDWB.registros[1][reg1] == 0){
 				regIDWB.registros[1][reg1]++;
-				regIDWB.registros[1][reg2]++;
-				super.reg_ID_EX.regA = regIDWB.registros[0][IR[1]];
-				super.reg_ID_EX.regB = regIDWB.registros[0][IR[2]];
-				super.reg_ID_EX.imm = inm;
+				//regIDWB.registros[1][reg2]++;
+				//super.reg_ID_EX.regA = regIDWB.registros[0][IR[1]];
+				//super.reg_ID_EX.regB = regIDWB.registros[0][IR[2]];
+				//super.reg_ID_EX.imm = inm;
+				regA  = regIDWB.registros[0][IR[1]];
+				regB  = regIDWB.registros[0][IR[2]];
+				inmediato = inm;
 				
-				super.reg_ID_EX.npc = super.reg_IF_ID.npc + (inm*4);
-				 
+				//super.reg_ID_EX.npc = super.reg_IF_ID.npc + (inm*4);
+				 pc = super.reg_IF_ID.npc + (inm*4);
 
 				
 			} else{
@@ -172,22 +201,34 @@ public class ID extends Etapa implements Runnable {
 		// caso jal.
 		} else if(IR[0] == 111){
 
-			super.reg_ID_EX.imm = inm;
-			super.reg_ID_EX.regA = -1;
-			super.reg_ID_EX.regB = -1;
+			//super.reg_ID_EX.imm = inm;
+			//super.reg_ID_EX.regA = -1;
+			//super.reg_ID_EX.regB = -1;
 
-			super.reg_ID_EX.npc = super.reg_IF_ID.npc + inm;
+			//super.reg_ID_EX.npc = super.reg_IF_ID.npc + inm;
+			
+			inmediato = inm;
+			regA = -1;
+			regB = -1;
+			pc =  super.reg_IF_ID.npc + inm;
 
 		//caso jalr.
 		} else if(IR[0] == 103){
 			
 			if(regIDWB.registros[1][reg1] == 0 ){
 			    regIDWB.registros[1][reg1]++;
-				super.reg_ID_EX.regA = regIDWB.registros[0][reg1];
-				super.reg_ID_EX.regB = -1;
-				super.reg_ID_EX.imm = inm;
+				//super.reg_ID_EX.regA = regIDWB.registros[0][reg1];
+				//super.reg_ID_EX.regB = -1;
+				//super.reg_ID_EX.imm = inm;
 				
-				super.reg_ID_EX.npc =  regIDWB.registros[0][IR[2]] + inm;
+				//super.reg_ID_EX.npc =  regIDWB.registros[0][IR[2]] + inm;
+				
+			    regA  = regIDWB.registros[0][reg1];
+			    regB = -1;
+			    inmediato = inm;
+			    pc =   regIDWB.registros[0][IR[2]] + inm;
+				
+				
 			}else{
 				//no puede avanzar.
 			}
@@ -199,12 +240,17 @@ public class ID extends Etapa implements Runnable {
 		}								
 
 	
-		System.out.println("Pasó0ID");
+	
 		phaser1.arriveAndAwaitAdvance();
-		System.out.println("Pasó1ID");
+	
 		phaserID_EX.arriveAndAwaitAdvance();
 
 		//copia a registroIntermedioEX
+
+		super.reg_ID_EX.imm = inmediato;
+		super.reg_ID_EX.regA = regA;
+		super.reg_ID_EX.regB =  regB;
+
 		super.reg_ID_EX.ir = IR;
 		super.reg_ID_EX.npc = pc;
 
