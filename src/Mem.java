@@ -101,10 +101,10 @@ public class Mem extends Etapa implements Runnable {
 
 				}
 
-				if(IR[0] == 37){ //Lw
+				if(IR[0] == 5){ //Lw
 					cacheDatos[posCacheD][17] = 2;
 					lmd = cacheDatos[posCacheD][numPalabra];				
-				}else if(IR[0] == 5) { //Sw
+				}else if(IR[0] == 37) { //Sw
 					cacheDatos[posCacheD][17] = 1;
 					cacheDatos[posCacheD][numPalabra] = regB;
 				}

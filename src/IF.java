@@ -74,8 +74,8 @@ private int cacheInst[][];
 		MemoriaPrincipal memoriaPrincipal = MemoriaPrincipal.getInstancia();
 
 		
-		bloque = pc  / 16;
-		numPalabra = pc % 16;
+		bloque = (pc -384) / 16;
+		numPalabra = (pc - 384) % 16;
 		posCacheI = bloque % 4;
 
 
@@ -89,10 +89,10 @@ private int cacheInst[][];
 			int bloqueEnMemoria = bloqueMem - 24;
 
 			
-			System.out.println("bloqueEnMemoria: " + bloqueEnMemoria);
-			System.out.println("posCacheI: " + posCacheI);
-			System.arraycopy(memoriaPrincipal.memInstrucciones[numPalabra].palabra, 0, cacheInst[posCacheI], 0, 16);
-
+			//System.out.println("bloqueEnMemoria: " + bloqueEnMemoria);
+			//System.out.println("posCacheI: " + posCacheI);
+			System.arraycopy(memoriaPrincipal.memInstrucciones[bloqueEnMemoria].palabra, 0, cacheInst[posCacheI], 0, 16);
+			imprimirCache();
 			
 
 			for (int x = 0; x < 4; x++) { //Cada instruccion la coloca en el IR y la ejecuta con el metodo ALU.

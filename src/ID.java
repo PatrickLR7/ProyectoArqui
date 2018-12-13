@@ -16,6 +16,7 @@ public class ID extends Etapa implements Runnable {
 	private int regA;
 	private int regB;
 	private int inmediato;
+	boolean instruccionFinal;
 	
 
     public ID(int id, int[] contextoHilillo, Phaser phaser1, Phaser phaser2, Phaser phaserIF_ID, Phaser phaserID_EX) {
@@ -37,6 +38,7 @@ public class ID extends Etapa implements Runnable {
 		this.phaser2 = phaser2;
 		this.phaserIF_ID = phaserIF_ID;
 		this.phaserID_EX = phaserID_EX;
+		this.instruccionFinal = false;
 
 		/*this.phaser1.register();
 		this.phaser2.register();
@@ -52,6 +54,11 @@ public class ID extends Etapa implements Runnable {
 			System.out.println("Interrupted Exception: " + e);
 		}
 	}
+
+	public boolean getFinalice(){
+		return instruccionFinal;
+	}
+
 
 	@Override
 	public void ejecutarEtapa() throws InterruptedException{
@@ -236,6 +243,8 @@ public class ID extends Etapa implements Runnable {
 		}	else if(IR[0] == 999){
 			
 			//Finaliza
+			instruccionFinal = true;
+			System.out.println("Instrucción final: " + instruccionFinal);
 
 		}								
 

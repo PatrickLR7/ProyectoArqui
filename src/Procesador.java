@@ -38,6 +38,8 @@ public class Procesador {
   public Phaser phaserID_EX;
   public Phaser phaserEX_MEM;
   public Phaser phaserMEM_WB;
+
+
  
     public Procesador(){
 
@@ -69,7 +71,7 @@ public class Procesador {
 
         //phaser2.register();
         //phaser1.register();
-        System.out.println( phaser1.getRegisteredParties() );
+        //System.out.println( phaser1.getRegisteredParties() );
 
 
     }
@@ -119,6 +121,7 @@ public class Procesador {
 
     /** Metodo que imprime los valores del contexto*/
     public void imprimirContexto() {
+        System.out.println("CONTEXTO");
         String md = "";
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 33; j++) {
@@ -140,7 +143,7 @@ public class Procesador {
 
     Queue<Integer> colaIDs = new ArrayDeque<>();
 
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 6; i++) {
 
         String rutaHilo = i + ".txt";
         String instruccionesLeidas = leerArchivo(rutaHilo);
@@ -165,7 +168,7 @@ public class Procesador {
 
         int hililloActual = 0;
        
-        while (true) {
+        while (colaIDs.isEmpty() == false) {
             //procesador.phaser1.bulkRegister(6); 
             //procesador.phaser2.bulkRegister(6); 
             //procesador.phaserIF_ID.bulkRegister(2); 
@@ -226,10 +229,12 @@ public class Procesador {
                         procesador.ciclosRelojH4++;
                     }else if(hililloActual == 5){
                         procesador.ciclosRelojH5++;
-                    }else if(hililloActual == 6){
+                    }
+                    /*
+                    else if(hililloActual == 6){
                         procesador.ciclosRelojH6++;
                     } 
-
+                    */
 
                         System.out.println("CiclosRelojH0: " + procesador.ciclosRelojH0);
                         System.out.println("CiclosRelojH1: " + procesador.ciclosRelojH1);
@@ -237,9 +242,10 @@ public class Procesador {
                         System.out.println("CiclosRelojH3: " + procesador.ciclosRelojH3);
                         System.out.println("CiclosRelojH4: " + procesador.ciclosRelojH4);
                         System.out.println("CiclosRelojH5: " + procesador.ciclosRelojH5);
-                        System.out.println("CiclosRelojH6: " + procesador.ciclosRelojH6);
+                        //System.out.println("CiclosRelojH6: " + procesador.ciclosRelojH6);
                         System.out.println("CiclosReloj: " + procesador.ciclosReloj);
 
+                     if( procesador.hiloID.getFinalice() == false ){
 
                         if (procesador.hiloIF != null && procesador.hiloID != null && procesador.ciclosRelojHililloActual > procesador.quantum) {
                       
@@ -252,7 +258,7 @@ public class Procesador {
                                 procesador.hiloMEM.join();
                                 procesador.hiloWB.join();
                                 
-                                System.arraycopy(procesador.hiloWB.registrosIDWB.registros[0], 0, procesador.contexto[procesador.hiloWB.getIdHilillo()], 0, 31);
+                                System.arraycopy(procesador.hiloWB.registrosIDWB.registros[0], 0, procesador.contexto[procesador.hiloWB.getIdHilillo()], 0, 32);
                                 procesador.contexto[procesador.hiloWB.getIdHilillo()][32] = procesador.hiloWB.reg_MEM_WB.npc;
                                 colaIDs.add(procesador.hiloWB.getIdHilillo());
                                 
@@ -266,11 +272,27 @@ public class Procesador {
                            } catch (InterruptedException e){
                                System.out.println(e);
                            }
-                           
-
-
                             
                         }
+
+                    } else{
+
+                        try{
+                            procesador.hiloIF.join();
+                            procesador.hiloID.join();
+                            procesador.hiloEX.join();
+                            procesador.hiloMEM.join();
+                            procesador.hiloWB.join();
+                            procesador.hiloIF = null;
+                            procesador.hiloID = null;
+                            procesador.hiloEX = null;
+                            procesador.hiloMEM = null;
+                            procesador.hiloWB = null;
+                        } catch (InterruptedException e){
+                            System.out.println(e);
+                        }
+
+                    }
 
 
                     procesador.phaser2.arriveAndAwaitAdvance();
@@ -279,5 +301,10 @@ public class Procesador {
                   
 
                 }
+
+                procesador.imprimirContexto();
+                System.out.println("Termino!");
+
+
         }
 }
